@@ -1,4 +1,5 @@
 import os
+import sys
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 
@@ -102,8 +103,8 @@ def handle_registrations(*args, **kwargs):
             index_count = len(site.get_indexed_models())
             
             if index_count:
-                print "Loaded URLconf to initialize SearchSite..."
-                print "Main site registered %s index(es)." % index_count
+                print >>sys.stderr, "Loaded URLconf to initialize SearchSite..."
+                print >>sys.stderr, "Main site registered %s index(es)." % index_count
         
         handle_registrations.previously_initialized = True
 

@@ -1,3 +1,4 @@
+import sys
 from django.core.management.base import NoArgsCommand
 from django.template import loader, Context
 from haystack.constants import DEFAULT_OPERATOR
@@ -23,10 +24,10 @@ class Command(NoArgsCommand):
             'default_operator': default_operator,
         })
         schema_xml = t.render(c)
-        print
-        print
-        print
-        print "Save the following output to 'schema.xml' and place it in your Solr configuration directory."
-        print '--------------------------------------------------------------------------------------------'
-        print
+        print >>sys.stderr
+        print >>sys.stderr
+        print >>sys.stderr
+        print >>sys.stderr, "Save the following output to 'schema.xml' and place it in your Solr configuration directory."
+        print >>sys.stderr, '--------------------------------------------------------------------------------------------'
+        print >>sys.stderr
         print schema_xml

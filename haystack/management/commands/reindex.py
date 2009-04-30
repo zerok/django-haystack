@@ -1,3 +1,4 @@
+import sys
 import datetime
 from optparse import make_option
 from django.core.management.base import AppCommand, CommandError
@@ -48,7 +49,7 @@ class Command(AppCommand):
                 index = site.get_index(model)
             except NotRegistered:
                 if self.verbosity >= 2:
-                    print "Skipping '%s' - no index." % model
+                    print >>sys.stderr, "Skipping '%s' - no index." % model
                 continue
 
             extra_lookup_kwargs = {}
@@ -59,7 +60,7 @@ class Command(AppCommand):
                     extra_lookup_kwargs['%s__gte' % updated_field] = datetime.datetime.now() - datetime.timedelta(hours=self.age)
                 else:
                     if self.verbosity >= 2:
-                        print "No updated date field found for '%s' - not restricting by age." % model.__name__
+                        print >>sys.stderr, "No updated date field found for '%s' - not restricting by age." % model.__name__
             
             # DRL_TODO: .select_related() seems like a good idea here but
             #           can cause empty QuerySets. Why?
@@ -67,13 +68,13 @@ class Command(AppCommand):
             total = qs.count()
 
             if self.verbosity >= 1:
-                print "Indexing %d %s." % (total, smart_str(model._meta.verbose_name_plural))
+                print >>sys.stderr, "Indexing %d %s." % (total, smart_str(model._meta.verbose_name_plural))
 
             for start in range(0, total, self.batchsize):
                 end = min(start + self.batchsize, total)
                 
                 if self.verbosity >= 2:
-                    print "  indexing %s - %d of %d." % (start+1, end, total)
+                    print >>sys.stderr, "  indexing %s - %d of %d." % (start+1, end, total)
                 
                 # Get a clone of the QuerySet so that the cache doesn't bloat up
                 # in memory. Useful when reindexing large amounts of data.
